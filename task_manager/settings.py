@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-h=3f-*7oyi%chw%8p_e0k#r^5p+pe!zy38s0umh=i+o!ug8593
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['18.220.58.44']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -132,3 +132,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+# Configura la URL de Redis
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
