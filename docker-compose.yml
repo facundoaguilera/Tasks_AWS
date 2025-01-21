@@ -32,7 +32,7 @@ services:
       - "6379:6379"
   celery:
     build: .
-    command: celery -A task_manager worker --loglevel=info  # Reemplaza 'your_project_name' por el nombre real de tu proyecto
+    command: celery -A task_manager worker --loglevel=info  
     volumes:
       - .:/app
     depends_on:

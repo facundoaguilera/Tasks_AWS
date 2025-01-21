@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'tasks',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -76,9 +77,17 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    #'default': {
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'tasks-database',  # El nombre de la base de datos en RDS
+        'USER': 'facu',  # El usuario de conexión a la base de datos
+        'PASSWORD': 'faguileradev',  # La contraseña para la base de datos
+        'HOST': 'tasks-database.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com',  # El endpoint de RDS
+        'PORT': '5432',  # Puerto, por defecto 5432 para PostgreSQL
+    #}
     }
 }
 
@@ -138,3 +147,18 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 # Configura la URL de Redis
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+
+# AMAZON S3
+AWS_ACCESS_KEY_ID = 'facu'
+AWS_SECRET_ACCESS_KEY = 'faguileradev'
+AWS_STORAGE_BUCKET_NAME = 'tasks-database'
+AWS_S3_REGION_NAME = 'us-east-1'  # O la región donde esté tu bucket
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+# Configura el almacenamiento de archivos estáticos
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Configura el almacenamiento de archivos multimedia
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
