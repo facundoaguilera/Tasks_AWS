@@ -82,10 +82,10 @@ DATABASES = {
         #'NAME': BASE_DIR / 'db.sqlite3',
         'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tasks-database',  # El nombre de la base de datos en RDS
+        'NAME': 'dbpruebas',  # El nombre de la base de datos en RDS
         'USER': 'facu',  # El usuario de conexión a la base de datos
         'PASSWORD': 'faguileradev',  # La contraseña para la base de datos
-        'HOST': 'tasks-database.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com',  # El endpoint de RDS
+        'HOST': 'dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com',  # El endpoint de RDS
         'PORT': '5432',  # Puerto, por defecto 5432 para PostgreSQL
     #}
     }
