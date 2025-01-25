@@ -8,15 +8,19 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=1
-      - POSTGRES_DB=dbpruebas
-      - POSTGRES_USER=facu
-      - POSTGRES_PASSWORD=faguileradev
-      - CELERY_BROKER_URL=redis://redis:6379/0  # Conexión con Redis
+      DB_HOST: dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com
+      DB_PORT: 5432
+      DB_NAME: dbpruebas
+      DB_USER: facu
+      DB_PASSWORD: faguileradev
     depends_on:
+      - migrate
       - db
       - redis
       - celery
+    networks:
+      - app-network
+      - CELERY_BROKER_URL=redis://redis:6379/0  # Conexión con Redis
 
   redis:
     image: redis:alpine
