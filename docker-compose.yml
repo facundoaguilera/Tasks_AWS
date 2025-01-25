@@ -8,6 +8,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      DATABASE_URL: postgres://facu:faguileradev@rds-dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com:5432/dbpruebas
       DB_HOST: dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com
       DB_PORT: 5432
       DB_NAME: dbpruebas
