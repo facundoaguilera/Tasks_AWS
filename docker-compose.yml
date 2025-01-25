@@ -14,36 +14,46 @@ services:
       DB_NAME: dbpruebas
       DB_USER: facu
       DB_PASSWORD: faguileradev
+      CELERY_BROKER_URL: redis://redis:6379/0  # Conexión con Redis
     depends_on:
-      - migrate
-      - db
       - redis
       - celery
     networks:
       - app-network
-      - CELERY_BROKER_URL=redis://redis:6379/0  # Conexión con Redis
 
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - app-network
+
   celery:
     build: .
-    command: celery -A task_manager worker --loglevel=info  
+    command: celery -A task_manager worker --loglevel=info
     volumes:
       - .:/app
+    environment:
+      DATABASE_URL: postgres://facu:faguileradev@rds-dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com:5432/dbpruebas
+      CELERY_BROKER_URL: redis://redis:6379/0
     depends_on:
       - redis
-      - db
+    networks:
+      - app-network
+
   migrate:
-    image: postgres:16.6
-    container_name: db_migrator
-    entrypoint: ["sh", "-c", "until pg_isready -h dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com -U facu; do sleep 1; done && python manage.py migrate"]
+    build: .
+    command: python manage.py migrate
+    volumes:
+      - .:/app
     environment:
-      PGPASSWORD: faguileradev
+      DATABASE_URL: postgres://facu:faguileradev@rds-dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com:5432/dbpruebas
+    depends_on:
+      - redis
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
