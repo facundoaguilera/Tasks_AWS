@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    
     'tasks',
+    'notifications',
     'storages',
 ]
 
@@ -70,23 +74,24 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'task_manager.wsgi.application'
+#WSGI_APPLICATION = 'task_manager.wsgi.application'
+ASGI_APPLICATION = 'task_manager.asgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    #'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-        'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbpruebas',  # El nombre de la base de datos en RDS
-        'USER': 'facu',  # El usuario de conexión a la base de datos
-        'PASSWORD': 'faguileradev',  # La contraseña para la base de datos
-        'HOST': 'dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com',  # El endpoint de RDS
-        'PORT': '5432',  # Puerto, por defecto 5432 para PostgreSQL
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'default': {
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': 'dbpruebas',  # El nombre de la base de datos en RDS
+        # 'USER': 'facu',  # El usuario de conexión a la base de datos
+        # 'PASSWORD': 'faguileradev',  # La contraseña para la base de datos
+        # 'HOST': 'dbpruebas.cbkk0kmgy8f6.us-east-2.rds.amazonaws.com',  # El endpoint de RDS
+        # 'PORT': '5432',  # Puerto, por defecto 5432 para PostgreSQL
     #}
     }
 }
@@ -162,3 +167,21 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Configura el almacenamiento de archivos multimedia
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Configurar ASGI en lugar de WSGI
+#ASGI_APPLICATION = "mi_proyecto.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # Usar en desarrollo
+    },
+}
+# Configurar Redis como channel layer
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],  # Conexión a Redis local
+#         },
+#     },
+# }

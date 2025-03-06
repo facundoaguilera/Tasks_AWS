@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prueba de WebSocket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de WebSocket</h1>
+    <form id="taskForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description" rows="4"></textarea>
+
+        <label for="due_date">Fecha límite:</label>
+        <input type="date" id="due_date" name="due_date" required>
+
+        <label for="assigned_to">Asignar a:</label>
+        <select id="assigned_to" name="assigned_to" required>
+            <option value="">Selecciona un usuario</option>
+            <!-- Aquí deberías cargar dinámicamente los usuarios -->
+            <option value="1">Usuario 1</option>
+            <option value="2">Usuario 2</option>
+        </select>
+
+        <label for="status">Estado:</label>
+        <select id="status" name="status" required>
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+        </select>
+
+        <label for="team">Equipo:</label>
+        <select id="team" name="team" required>
+            <option value="">Selecciona un equipo</option>
+            <!-- Aquí deberías cargar dinámicamente los equipos -->
+            <option value="1">Equipo 1</option>
+            <option value="2">Equipo 2</option>
+        </select>
+
+        <button type="submit">Guardar Tarea</button>
+    </form>
+    <script>
+        const socket = new WebSocket('ws://localhost:8000/ws/notifications/');
+
+        socket.onopen = function(event) {
+            console.log('Conexión WebSocket establecida');
+            // Enviar un mensaje al servidor
+            socket.send(JSON.stringify({ message: 'Hola, WebSocket!' }));
+        };
+
+        socket.onmessage = function(event) {
+            console.log('Mensaje recibido:', event.data);
+        };
+
+        socket.onclose = function(event) {
+            console.log('Conexión WebSocket cerrada');
+        };
+
+        socket.onerror = function(error) {
+            console.error('Error en WebSocket:', error);
+        };
+        // Manejar el envío del formulario
+        document.getElementById('taskForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar el envío tradicional del formulario
+
+            // Obtener los valores del formulario
+            const formData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                due_date: document.getElementById('due_date').value,
+                assigned_to: parseInt(document.getElementById('assigned_to').value),
+                status: document.getElementById('status').value,
+                team: parseInt(document.getElementById('team').value)
+            };
+
+            // Enviar los datos al backend usando Fetch API
+            fetch('/api/tasks/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    //'X-CSRFToken': getCookie('csrftoken') // Si estás usando CSRF en Django
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Tarea creada exitosamente');
+                console.log('Respuesta del servidor:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al crear la tarea');
+            });
+        });
+
+    </script>
+</body>
+</html>

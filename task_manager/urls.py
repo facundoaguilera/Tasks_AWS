@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('tasks.urls')),  # Ruta para las API de tareas
+    path('ws/', include('notifications.urls')),  # Ruta para los ws
 ]
